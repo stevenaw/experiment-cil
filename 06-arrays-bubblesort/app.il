@@ -9,15 +9,126 @@
     .entrypoint
     .locals init ([0] int32[] arr)
 
-    ldc.i4 100
+    ldc.i4 12
     call int32[] CreateRandomArray(int32)
     stloc.0
 
     ldloc.0
     call void PrintArrayInfo(int32[])
 
+    ldloc.0
+    call void Bubblesort(int32[])
+
+    ldloc.0
+    call void PrintArrayInfo(int32[])
+
     call int32 [mscorlib]System.Console::Read()
     pop
+
+    ret
+}
+
+.method public static void Bubblesort(int32[]) cil managed
+{
+    .maxstack 8
+    .locals init (
+         [0] int32[] arr
+        ,[1] int32 len
+        ,[2] int32 i
+        ,[3] int32 j
+    )
+
+    ldarg.0
+    stloc.0         // local[0] == passed array
+
+    ldarg.0
+    ldlen
+    conv.i4
+    stloc.1         // local[1] == array.Length
+
+    ldc.i4.0        // local[2] == 0
+    stloc.2
+
+    br outer_loop_check
+
+outer_loop_body:
+    // Initialize inner loop variable
+    // j = i + 1
+    ldloc       i
+    ldc.i4      1
+    add
+    stloc       j
+
+    br inner_loop_check
+
+inner_loop_body:
+    ldloc       arr
+    ldloc       i
+    ldelem.i4
+
+    ldloc       arr
+    ldloc       j
+    ldelem.i4
+
+    blt         inner_loop_increment
+
+    // Swap
+    ldloc       arr
+    ldloc       i
+    ldloc       j
+    call        void SwapItems(int32[], int32, int32)
+
+
+inner_loop_increment:
+    // Increment j
+    ldloc      j   // j++
+    ldc.i4     1
+    add
+    stloc      j
+
+inner_loop_check:
+    ldloc       j
+    ldloc       len
+    blt inner_loop_body    // loop if j < len
+
+// outer loop increment
+    // Increment i
+    ldloc      i   // i++
+    ldc.i4     1
+    add
+    stloc      i
+
+outer_loop_check:
+    ldloc       i
+    ldloc       len
+    blt outer_loop_body    // loop if i < len -1
+
+    ret
+}
+
+.method public static void SwapItems(int32[], int32, int32) cil managed
+{
+    .maxstack 4
+    .locals init (
+        [0] int32 tmp
+    )
+
+    ldarg.0         // tmp = items[i]
+    ldarg.1
+    ldelem.i4
+    stloc.0  
+
+    ldarg.0         // items[i] = items[j]
+    ldarg.1
+    ldarg.0
+    ldarg.2
+    ldelem.i4
+    stelem.i4
+
+    ldarg.0         // items[j] = tmp
+    ldarg.2
+    ldloc.0
+    stelem.i4
 
     ret
 }
