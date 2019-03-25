@@ -1,4 +1,4 @@
-# Experimating with Common Intermediate Language (CIL)
+# Experimenting with Common Intermediate Language (CIL)
 
 A series of small programs to experiment with and learn about CIL.
 
